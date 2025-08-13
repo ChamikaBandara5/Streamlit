@@ -274,7 +274,7 @@ elif page == "📈 Model Performance":
 
     # ------------------ IMAGE PROCESSING ------------------
 elif page == "🖼 Image Processing":
-    st.title("🖼 Image Processing Demo")
+    st.title("🖼 Image Processing")
 
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
     
