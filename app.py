@@ -6,7 +6,6 @@ import plotly.express as px
 import seaborn as sns
 import cv2
 from PIL import Image
-
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report
@@ -117,7 +116,7 @@ if page == "🏠 Home":
     )
 
     # Titanic Image
-    st.image("https://upload.wikimedia.org/wikipedia/commons/f/fd/RMS_Titanic_3.jpg", use_column_width=True)
+    st.image("https://upload.wikimedia.org/wikipedia/commons/f/fd/RMS_Titanic_3.jpg", use_container_width=True)
 
     st.markdown(
         """
