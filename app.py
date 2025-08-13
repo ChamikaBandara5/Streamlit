@@ -98,7 +98,8 @@ model = load_model()
 
 # ------------------ SIDEBAR NAV ------------------
 st.sidebar.title("📌 Navigation")
-page = st.sidebar.radio("Go to", ["🏠 Home", "🔍 Data Exploration", "📊 Visualisation", "🤖 Make Prediction", "📈 Model Performance"])
+page = st.sidebar.radio("Go to", ["🏠 Home", "🔍 Data Exploration", "📊 Visualisation", "🤖 Make Prediction", "📈 Model Performance", "🖼 Image Processing"
+])
 
 # ------------------ HOME PAGE ------------------
 if page == "🏠 Home":
@@ -243,3 +244,70 @@ elif page == "📈 Model Performance":
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
     st.pyplot(fig)
+
+
+    # ------------------ IMAGE PROCESSING ------------------
+elif page == "🖼 Image Processing":
+    st.title("🖼 Image Processing Demo")
+
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+    
+    if uploaded_file is not None:
+        # Detect file extension to keep same format
+        file_ext = uploaded_file.name.split(".")[-1].lower()
+
+        # Load original image
+        image = Image.open(uploaded_file)
+        st.subheader("Original Image")
+        st.image(image, caption="Uploaded Image", use_container_width=True)
+
+        # Convert to OpenCV
+        img_array = np.array(image)
+        img_cv = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+
+        st.subheader("Processing Options")
+        option = st.selectbox("Choose processing type", ["Grayscale", "Edge Detection", "Resize"])
+
+        processed_image = None  # To store processed result for download
+
+        if option == "Grayscale":
+            gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
+            st.image(gray, caption="Grayscale Image", use_container_width=True, channels="GRAY")
+            processed_image = Image.fromarray(gray)
+
+        elif option == "Edge Detection":
+            edges = cv2.Canny(img_cv, 100, 200)
+            st.image(edges, caption="Edges Detected", use_container_width=True, channels="GRAY")
+            processed_image = Image.fromarray(edges)
+
+        elif option == "Resize":
+            width = st.slider("Width", 50, img_cv.shape[1], 200)
+            height = st.slider("Height", 50, img_cv.shape[0], 200)
+            resized = cv2.resize(img_cv, (width, height))
+            resized_rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
+            st.image(resized_rgb, caption="Resized Image", use_container_width=True)
+            processed_image = Image.fromarray(resized_rgb)
+
+        # Provide download button
+        if processed_image is not None:
+            from io import BytesIO
+            buf = BytesIO()
+
+            # Map file extensions to Pillow format names
+            ext_to_format = {
+                "jpg": "JPEG",
+                "jpeg": "JPEG",
+                "png": "PNG"
+            }
+            save_format = ext_to_format.get(file_ext, "PNG")  # default to PNG if unknown
+
+            processed_image.save(buf, format=save_format)
+            byte_data = buf.getvalue()
+
+            st.download_button(
+                label="📥 Download Processed Image",
+                data=byte_data,
+                file_name=f"processed_image.{file_ext}",
+                mime=f"image/{file_ext}"
+            )
+
