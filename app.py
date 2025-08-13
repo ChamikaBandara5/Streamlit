@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 import plotly.express as px
 import seaborn as sns
+import cv2
 from PIL import Image
 
 import matplotlib.pyplot as plt
