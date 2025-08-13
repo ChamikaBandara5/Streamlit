@@ -162,13 +162,36 @@ elif page == "📊 Visualisation":
     st.title("📊 Titanic Data Visualisation")
 
     st.subheader("Survival by Gender")
-    st.plotly_chart(px.histogram(df, x="Sex", color="Survived", barmode="group"), use_container_width=True)
+    st.plotly_chart(
+        px.histogram(df, x="Sex", color="Survived", barmode="group"),
+        use_container_width=True
+    )
 
     st.subheader("Survival by Passenger Class")
-    st.plotly_chart(px.histogram(df, x="Pclass", color="Survived", barmode="group"), use_container_width=True)
+    st.plotly_chart(
+        px.histogram(df, x="Pclass", color="Survived", barmode="group"),
+        use_container_width=True
+    )
 
     st.subheader("Age Distribution")
-    st.plotly_chart(px.histogram(df, x="Age", nbins=30, color="Survived"), use_container_width=True)
+    st.plotly_chart(
+        px.histogram(df, x="Age", nbins=30, color="Survived"),
+        use_container_width=True
+    )
+
+    # 🔥 New: Correlation Heatmap
+    st.subheader("Correlation Heatmap")
+    numeric_df = df.select_dtypes(include=['float64', 'int64'])  # only numeric columns
+    corr_matrix = numeric_df.corr()
+
+    fig_heatmap = px.imshow(
+        corr_matrix,
+        text_auto=True,
+        color_continuous_scale="RdBu_r",
+        title="Feature Correlation Heatmap"
+    )
+    st.plotly_chart(fig_heatmap, use_container_width=True)
+
 
 # ------------------ PREDICTION ------------------
 elif page == "🤖 Make Prediction":
@@ -271,7 +294,7 @@ elif page == "🖼 Image Processing":
         st.subheader("Processing Options")
         option = st.selectbox("Choose processing type", ["Grayscale", "Edge Detection", "Resize"])
 
-        processed_image = None  # To store processed result for download
+        processed_image = None  
 
         if option == "Grayscale":
             gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
@@ -302,7 +325,7 @@ elif page == "🖼 Image Processing":
                 "jpeg": "JPEG",
                 "png": "PNG"
             }
-            save_format = ext_to_format.get(file_ext, "PNG")  # default to PNG if unknown
+            save_format = ext_to_format.get(file_ext, "PNG")  
 
             processed_image.save(buf, format=save_format)
             byte_data = buf.getvalue()
